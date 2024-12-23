@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Chatbox popup */
+      #chat-box {
+        visibility: hidden;
+        width: 400px;
+        height: 600px;
+        max-width: 100%;
+        max-height: 80vh;
+        /* overflow-y: auto; */
+        resize: vertical; /* 仅允许垂直调整大小 */
+        border: 1px solid #ccc;
+        position: fixed;
+        top: 5px; /* 固定在左上角 */
+        right: 5px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* z-index: 9999; */
+      }
+      #chat-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        font-size: 18px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <!--{{必須為雙大括號}}-->
+    <h1>Welcome, {{ username }}!</h1>
+    <p>Today is {{ tdate }}</p>
+    <p>Now is {{ now_time }}</p>
+
+    <!-- Floating Chat Button -->
+    <button id="chat-button" onclick="toggleChatBox()">Chat</button>
+
+    <!-- Chat Box -->
+     <!--要先設定style="visibility: hidden;"，不然要按兩下按鈕-->
+    <div id="chat-box" style="visibility: hidden;">
+      <iframe
+        id="chat-iframe"
+        src="/chat"
+        frameborder="0"
+        width="100%"
+        height="100%"
+        style="border-radius: 10px"
+      ></iframe>
+    </div>
+
+    <script>
+      const chatBox = document.getElementById("chat-box"); // 維持對話紀錄
+      // Toggle chat box visibility
+      document
+        .getElementById("chat-button")
+        .addEventListener("click", function () {
+          const visibilityStates = ["hidden", "visible"];
+
+          // 切换 visibility 状态
+          chatBox.style.visibility =
+            chatBox.style.visibility === visibilityStates[0]
+              ? visibilityStates[1]
+              : visibilityStates[0];
+        });
+    </script>
+  </body>
+</html>
