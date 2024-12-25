@@ -13,15 +13,16 @@
       /* Chatbox popup */
       #chat-box {
         visibility: hidden;
-        width: 400px;
-        height: 600px;
-        max-width: 100%;
-        max-height: 80vh;
+        width: 600px;
+        height: 800px;
+        max-width: 40%;
+        max-height: 80%;
+        min-height: 30%;
         /* overflow-y: auto; */
-        resize: vertical; /* 仅允许垂直调整大小 */
+        /* resize: vertical; 仅允许垂直调整大小 */
         border: 1px solid #ccc;
         position: fixed;
-        top: 5px; /* 固定在左上角 */
+        bottom: 35px; /* 固定在左上角 */
         right: 5px;
         background-color: white;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -39,6 +40,15 @@
         font-size: 18px;
         cursor: pointer;
       }
+      @media (max-width: 570px), (max-height: 450px) {
+        #chat-box {
+          display: none;
+          /* visibility: hidden; 或使用  */
+        }
+        #chat-button {
+          visibility: hidden; /* 或使用 display: none; */
+        }
+      }
     </style>
   </head>
   <body class="bg-gray-100">
@@ -51,8 +61,8 @@
     <button id="chat-button" onclick="toggleChatBox()">Chat</button>
 
     <!-- Chat Box -->
-     <!--要先設定style="visibility: hidden;"，不然要按兩下按鈕-->
-    <div id="chat-box" style="visibility: hidden;">
+    <!--要先設定style="visibility: hidden;"，不然要按兩下按鈕-->
+    <div id="chat-box" style="visibility: hidden">
       <iframe
         id="chat-iframe"
         src="/chat"

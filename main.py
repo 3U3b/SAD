@@ -34,6 +34,8 @@ app.register_blueprint(chat.chat_bp, url_prefix='/chat')
 with app.app_context():
     sql.db.create_all()
 
+User_Model = sql.User
+
 @app.route('/')
 def index():
     username = 'John'
@@ -46,9 +48,22 @@ def index():
     return render_template('page1.html', username=username, tdate=date, now_time=formatted_time)
 
 @app.route('/user/<name>', methods=['GET'])
-def queryDataMessageByName(name):
-    print("type(name) : ", type(name))
-    return 'String => {}'.format(name)
+def queryDataMessageByName(name):# 在sqlite尋找相關用戶資料(兩種方法)
+    a=False
+    try:
+        user1 = sql.User.query.filter_by(name=name).first() # 可以過濾出特定屬性的值
+        user2 = sql.User.query.get(user1.id) # 取得符合主鍵的值
+    except Exception as e:
+        print(f'{type(user1)} {user1} is not a user') # 當name在SQL中無符合資料
+        a=True
+    finally :
+        print(f'{type(user1)} "User1: "{user1}') # type = test.sql.User
+        if a :
+            print(f'user is not exist')
+        else:
+            print(f'{type(user2)} "User2: "{user2}') # type = test.sql.User
+        # print("type(name) : ", type(name))
+        return 'String => {}'.format(name)
 # --------------
 # --------------
 

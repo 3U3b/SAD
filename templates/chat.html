@@ -20,6 +20,7 @@
         /* border-radius: 20px; */
         box-shadow: 0 2px 4px rgba(148, 148, 148, 0.075);
         border: 1px solid rgba(219, 219, 219, 0.295);
+        font-size: clamp(14px, 4vw, 17px);
         display: inline-block; /* 讓氣泡根據內容自動寬度調整 */
         word-break: break-word; /* 確保長字串也能換行 */
         /* white-space: pre-wrap; 保留換行符並自動換行 */
@@ -50,84 +51,109 @@
         text-align: left;
       }
       /* 容器樣式 */
-      .input-bar {
+      .container {
         display: flex;
-        flex-direction:row;
-        gap: 5px; /* 控制內部間距 */
-        align-items: flex-end; /* 輸入框頂對齊 */
-        /* align-items: center; 垂直居中 */
+        flex-direction: column; /* Vertically stack the elements */
+        height: 100vh; /* Take full viewport height */
+        position: relative; /* Make sure absolute positioned elements are relative to this container */
+      }
+
+      /* Chat box should take the remaining space */
+      #chat-box {
+        flex-grow: 1; /* Let the chat box grow to take the remaining space */
+        overflow-y: auto; /* Allow vertical scrolling */
+        padding: 1rem;
+        margin-bottom: 5rem;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column; /* Stack chat messages vertically */
+        min-height: 0; /* Prevent overflow */
+      }
+
+      /* Text button should be above the input bar */
+      #text-button {
+        position: absolute; /* Use absolute positioning */
+        bottom: 60px; /* 60px above the input bar */
+        left: 0;
+        right: 0;
+        background-color: rgba(140, 255, 255, 0.596);
+        color: black;
+        border: none;
+        border-radius: 20px 20px 0 20px;
+        cursor: pointer;
+        font-size: clamp(12px, 4vw, 16px);
+        text-align: center;
+        padding: 10px;
+      }
+
+      #text-button:hover {
+        background-color: #ffa64186;
+      }
+
+      /* Input bar should be fixed at the bottom of the container */
+      .input-bar {
+        position: absolute; /* Fixed at the bottom */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: row; /* Horizontal layout */
+        gap: 5px; /* Space between elements */
+        align-items: flex-end; /* Align items to the bottom */
         padding: 8px;
         border: 1px solid #ccc;
         border-radius: 8px;
         background-color: #f9f9f9;
+        box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for separation */
       }
 
-      /* 左側輸入框樣式 */
+      /* Style for the input field */
       #user-input {
-        flex-grow: 1; /*在可用空間中會擴展 1 倍*/
-        /* flex-grow: 0.95; */
-        /* flex: 22; 佔用 80% 的空間 */
+        flex-grow: 1; /* Allow it to take available space */
         padding: 5px 3px;
-        font-size: 16px;
+        font-size: clamp(12px, 4vw, 16px);
         line-height: 1.5;
         border: 1.3px solid #ccc;
         border-radius: 8px;
-        text-align: center;
-        text-align: left; /* 文字靠左 */
-        vertical-align: middle; /* 垂直方向居中 */
-        overflow: hidden; /* 隱藏滾動條 */
-        resize: none; /* 禁用手動調整大小 */
+        text-align: left; /* Align text to the left */
+        overflow: hidden; /* Hide the scrollbar */
+        resize: none; /* Disable resizing */
         transition: height 0.2s ease;
-        min-height: calc(1.3em * 2); /* 最小高度為兩行 */
+        min-height: calc(1.3em * 2); /* Minimum height for two rows */
         max-width: 95%;
       }
 
+      /* Focus style for the input */
       #user-input:focus {
-        /*點擊輸入框，框線會變色*/
         outline: none;
         border-color: #ffca1bd3;
       }
 
-      /* 右側按鈕樣式 */
+      /* Send button style */
       #send-btn {
-        /* position: absolute; 絕對定位(沒有父容器就會定位在主頁面上) */
-        right: 7px; /* 與父容器右邊的間距 */
-        bottom: 10px; /* 與父容器底部的間距 */
-        padding: 10px 8px; /* 控制按鈕大小 */
-        flex-shrink: 0; /* 確保按鈕不會被縮小 */
-        /* 
-        flex: 1; /* 佔用 20% 的空間 
-        padding: 0 16px;
-        height: calc(1.5em + 20px); 與 textarea 行高一致 */
+        right: 7px;
+        bottom: 10px;
+        padding: 10px 8px;
         background-color: #fffb0070;
-        font-size: 16px;
         color: black;
         border: none;
         border-radius: 20px;
         cursor: pointer;
-        text-align: center;
+        font-size: clamp(12px, 4vw, 16px);
       }
 
       #send-btn:hover {
         background-color: #ffa64186;
       }
-
-      /* Chat box styling */
-      #chat-box {
-        overflow-y: auto;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        background-color: white;
-        border-radius: 0.5rem;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      #send-btn:hover {
+        background-color: #ffa64186;
       }
       pre {
         margin: 0;
         font-family: Consolas, monospace;
       }
-
       code {
         display: block;
       }
@@ -139,18 +165,29 @@
         border-radius: 8px;
         white-space: pre-wrap;
         word-wrap: break-word;
-        font-size: 14px;
+        font-size: clamp(12px, 4vw, 14px);
       }
     </style>
   </head>
   <body class="bg-gray-100 font-sans">
     <div class="container mx-auto p-4">
-      <h1 class="text-4xl font-semibold mb-6 text-center">客服機器人</h1>
+      <h1
+        class="text-center font-semibold mb-6 text-center"
+        style="
+          font-size: clamp(25px, 4vw, 50px);
+          margin-bottom: clamp(4px, 4vw, 17px);
+        "
+      >
+        客服機器人
+      </h1>
 
       <!-- Chat log where messages appear -->
       <div id="chat-box"></div>
 
       <!-- Input area for the user -->
+      <button id="text-button" class="transition duration-300 ease-in-out">
+        Hi
+      </button>
       <div class="input-bar">
         <textarea
           id="user-input"

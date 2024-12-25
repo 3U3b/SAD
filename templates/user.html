@@ -8,7 +8,8 @@
     <script>
         // 用來發送 AJAX 請求，無需重新加載頁面
         function addUser(event) {
-            event.preventDefault(); // 防止表單提交刷新頁面
+            event.preventDefault(); // 防止表單提交刷新頁面(為何?)
+            // (似乎這樣才能顯示alert(data.message);)
 
             const name = document.getElementById("name").value;
             const age = document.getElementById("age").value;
