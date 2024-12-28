@@ -16,13 +16,10 @@
         width: 600px;
         height: 800px;
         max-width: 40%;
-        max-height: 80%;
-        min-height: 30%;
-        /* overflow-y: auto; */
-        /* resize: vertical; 仅允许垂直调整大小 */
+        max-height: 90%;
         border: 1px solid #ccc;
         position: fixed;
-        bottom: 35px; /* 固定在左上角 */
+        bottom: 50px; /* 固定在左下角 */
         right: 5px;
         background-color: white;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -32,14 +29,22 @@
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background-color: #4caf50;
+        background-color: #d6632ece;
         color: white;
         padding: 10px 20px;
         border-radius: 50%;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         font-size: 18px;
         cursor: pointer;
+        transition: transform 0.25s ease, background-color 0.5s ease;
       }
+      #chat-button:hover {
+      transform: rotate(360deg);  /* 滑鼠懸停時旋轉45度 */
+      background-color: coral; /* 滑鼠懸停時改變顏色 */
+    }
+    #chat-button.active-chat {
+    background-color: #3a1f1398; /* 按鈕被點擊後的背景顏色 */
+  }
       @media (max-width: 570px), (max-height: 450px) {
         #chat-box {
           display: none;
@@ -74,19 +79,19 @@
     </div>
 
     <script>
-      const chatBox = document.getElementById("chat-box"); // 維持對話紀錄
-      // Toggle chat box visibility
-      document
-        .getElementById("chat-button")
-        .addEventListener("click", function () {
-          const visibilityStates = ["hidden", "visible"];
-
-          // 切换 visibility 状态
-          chatBox.style.visibility =
-            chatBox.style.visibility === visibilityStates[0]
-              ? visibilityStates[1]
-              : visibilityStates[0];
-        });
+      function toggleChatBox() {
+        const chatBox = document.getElementById("chat-box");
+        const button = document.getElementById("chat-button");
+        
+        // 檢查 chat-bot 的目前顯示狀態,切換它
+        if (chatBox.style.visibility === "hidden") {
+          chatBox.style.visibility = "visible"; // 顯示聊天框
+          button.classList.add("active-chat"); // 當聊天框顯示時，添加 active-chat 類
+        } else {
+          chatBox.style.visibility = "hidden"; // 隱藏聊天框
+          button.classList.remove("active-chat"); 
+      }
+    };
     </script>
   </body>
 </html>

@@ -31,7 +31,7 @@ def generate_response(user_input):
         bot_response = response.text if hasattr(response, 'text') else '抱歉，我無法理解你的問題。'
         
         # 把機器人的回應加入對話上下文
-        conversation_history.append(f"機器人: {bot_response}")
+        conversation_history.append(f"{bot_response}")
         
         return bot_response
     except Exception as e:

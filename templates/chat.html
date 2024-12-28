@@ -8,6 +8,13 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <!-- 引入 highlight.js -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
     <!-- 使用 Tailwind CSS (從 CDN 加載) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -26,7 +33,6 @@
         /* white-space: pre-wrap; 保留換行符並自動換行 */
         overflow-wrap: break-word; /* 保證文字超出時能換行 */
       }
-
       /* User message styling */
       .user .chat-bubble {
         background-color: #cfcfcf7c;
@@ -53,17 +59,18 @@
       /* 容器樣式 */
       .container {
         display: flex;
-        flex-direction: column; /* Vertically stack the elements */
-        height: 100vh; /* Take full viewport height */
-        position: relative; /* Make sure absolute positioned elements are relative to this container */
+        flex-direction: column; /* Arrange elements vertically */
+        height: 100vh; /* Full viewport height */
+        padding-bottom: 100px; /* Ensure there's space for input-bar and button-bar */
+        position: relative; /* To contain absolute positioned elements */
       }
 
       /* Chat box should take the remaining space */
       #chat-box {
         flex-grow: 1; /* Let the chat box grow to take the remaining space */
         overflow-y: auto; /* Allow vertical scrolling */
-        padding: 1rem;
-        margin-bottom: 5rem;
+        padding: 1em;
+        margin-bottom: 1em;
         background-color: white;
         border-radius: 0.5rem;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -72,57 +79,59 @@
         min-height: 0; /* Prevent overflow */
       }
 
-      /* Text button should be above the input bar */
-      #text-button {
-        position: absolute; /* Use absolute positioning */
-        bottom: 60px; /* 60px above the input bar */
-        left: 0;
-        right: 0;
-        background-color: rgba(140, 255, 255, 0.596);
-        color: black;
-        border: none;
-        border-radius: 20px 20px 0 20px;
-        cursor: pointer;
+      .button-bar {
+        /* gap 和 justify-content都是用來控制按鈕間距和對齊方式*/
+        /* gap: 10px; */
+        display: flex;
+        flex-wrap: wrap; /* 允許換行 */
+        justify-content: flex-start;
+        background-color: #f9f9f9;
+        overflow-y: auto;
         font-size: clamp(12px, 4vw, 16px);
-        text-align: center;
-        padding: 10px;
+        min-height: 72px;
+        max-height: 120px;
+        margin-bottom: 5px;
+        padding: 5px;
       }
 
-      #text-button:hover {
-        background-color: #ffa64186;
+      /* Individual button styling */
+      .text-button {
+        background-color: rgba(89, 192, 192, 0.445);
+        color: #ffffff;
+        border: 1px solid rgba(219, 219, 219, 0.295);
+        border-radius: 20px 20px 0 20px;
+        cursor: pointer;
+        text-align: center;
+        padding: 10px 20px; /* 按鈕的內邊距 */
+        transition: background-color 0.3s ease;
+      }
+
+      .text-button:hover {
+        background-color: #d68c373f;
       }
 
       /* Input bar should be fixed at the bottom of the container */
       .input-bar {
-        position: absolute; /* Fixed at the bottom */
-        bottom: 0;
-        left: 0;
-        right: 0;
         display: flex;
-        flex-direction: row; /* Horizontal layout */
-        gap: 5px; /* Space between elements */
-        align-items: flex-end; /* Align items to the bottom */
+        flex-direction: row;
+        gap: 5px;
         padding: 8px;
         border: 1px solid #ccc;
+        background-color: #fff4f1;
         border-radius: 8px;
-        background-color: #f9f9f9;
-        box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for separation */
+        box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+        align-items: flex-end;
       }
 
       /* Style for the input field */
       #user-input {
-        flex-grow: 1; /* Allow it to take available space */
-        padding: 5px 3px;
+        flex-grow: 1;
+        padding: 5px;
         font-size: clamp(12px, 4vw, 16px);
-        line-height: 1.5;
-        border: 1.3px solid #ccc;
-        border-radius: 8px;
-        text-align: left; /* Align text to the left */
-        overflow: hidden; /* Hide the scrollbar */
-        resize: none; /* Disable resizing */
-        transition: height 0.2s ease;
-        min-height: calc(1.3em * 2); /* Minimum height for two rows */
-        max-width: 95%;
+        min-height: 30px;
+        resize: none;
+        overflow-y: auto;
+        max-height: 100px; /* Limit maximum height */
       }
 
       /* Focus style for the input */
@@ -147,25 +156,30 @@
       #send-btn:hover {
         background-color: #ffa64186;
       }
-      #send-btn:hover {
-        background-color: #ffa64186;
-      }
+      /* General pre styling */
       pre {
         margin: 0;
+        padding: 0;
         font-family: Consolas, monospace;
+        line-height: 1.5; /* 增加可讀性 */
       }
-      code {
-        display: block;
-      }
-      /* Styling for code blocks */
-      .code-block {
-        background-color: #2e2e2e;
-        color: #f5f5f5;
+
+      pre {
+        font-size: clamp(14px, 4vw, 17px);
+        font-family: "Fira Code", monospace; /* 使用更具可讀性的等寬字體 */
+        font-size: 14px;
+        background-color: #000725;
+        color: #333;
         padding: 10px;
-        border-radius: 8px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-size: clamp(12px, 4vw, 14px);
+        border: 1px solid #001055;
+        overflow-x: auto; /* 顯示水平滾動條 */
+        border-radius: 5px; /* 圓角邊框 */
+        white-space: pre-wrap; /* 讓內容自動換行 */
+        word-wrap: break-word; /* 單詞長度超過邊界時自動換行 */
+      }
+
+      pre code {
+        color: #f8f8f2;
       }
     </style>
   </head>
@@ -174,20 +188,27 @@
       <h1
         class="text-center font-semibold mb-6 text-center"
         style="
-          font-size: clamp(25px, 4vw, 50px);
+          font-size: clamp(32px, 4vw, 42px);
           margin-bottom: clamp(4px, 4vw, 17px);
         "
       >
         客服機器人
       </h1>
-
       <!-- Chat log where messages appear -->
       <div id="chat-box"></div>
 
       <!-- Input area for the user -->
-      <button id="text-button" class="transition duration-300 ease-in-out">
-        Hi
-      </button>
+      <!-- Button bar that contains multiple buttons -->
+      <div class="button-bar">
+        <button id="text-button-1" class="text-button">Hi</button>
+        <button id="text-button-2" class="text-button">Yo</button>
+        <button id="text-button-3" class="text-button">Who are you?</button>
+        <button id="text-button-4?" class="text-button">The famous course in this mounth</button>
+        <button id="text-button-5?" class="text-button">The famous coach in this mounth</button>
+        <button id="text-button-6?" class="text-button">The event</button>
+        <button id="text-button-7?" class="text-button">Suggested courses</button>
+        <!-- Add more buttons as needed -->
+      </div>
       <div class="input-bar">
         <textarea
           id="user-input"
@@ -203,90 +224,133 @@
     <script>
       // Function to auto-resize the text area based on input
       const textarea = document.getElementById("user-input");
-
-      // 自動調整行高
-      textarea.addEventListener("input", () => {
-        textarea.style.height = "auto"; // 重置高度
-        textarea.style.height = textarea.scrollHeight + "px"; // 設定新高度
-      });
+      const inputbar = document.getElementById("input-bar");
+      const send_btn = document.getElementById("send-btn");
+      // const textbuttonYo = document.getElementById("text-button-2");
+      var userMessage;
       var chatBox = document.getElementById("chat-box");
+
+      // 自動調整行高// Adjust the input height dynamically based on content
+
+      textarea.addEventListener("input", () => {
+        textarea.style.height = "auto"; // Reset height
+        const scrollHeight = textarea.scrollHeight;
+        const maxHeight = 150; // Maximum height for textarea
+
+        // Set height of textarea with a limit
+        textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+      });
+      const buttons = document.querySelectorAll(".text-button");
+
+      // 為每個按鈕設置事件處理函數
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const thebutton = textbutton = document.getElementById(button.id);
+          textarea.value = thebutton.textContent;
+        send_btn.onclick();
+          // console.log(`Button clicked: ${button.textContent}`);
+        });
+      });
       // Event handler for the send button
-      document.getElementById("send-btn").onclick = function () {
-        var userMessage = document.getElementById("user-input").value;
+      send_btn.onclick = function () {
+        userMessage = textarea.value;
         if (userMessage) {
           // 使用 marked.js 解析 Markdown，並處理程式碼塊
-          let formattedMessage = marked(userMessage);
+          // let formattedMessage = marked(userMessage);
 
           // 顯示用戶訊息，這裡使用 textContent 來保證顯示為純文本
           var userMessageElement = document.createElement("div");
           userMessageElement.classList.add("user");
           var userBubble = document.createElement("div");
           userBubble.classList.add("chat-bubble");
-          userBubble.textContent = "你: " + userMessage; // 使用 textContent 來顯示文字
+          userBubble.textContent = userMessage; // 使用 textContent 來顯示文字
           userMessageElement.appendChild(userBubble);
           chatBox.appendChild(userMessageElement);
 
-          document.getElementById("user-input").value = ""; // 清空輸入框
-          document.getElementById("user-input").style.height = "40px";
+          textarea.value = ""; // 清空輸入框
+          textarea.style.height = "40px";
           // 滾動到最新訊息
           chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        AI_respon(userMessage);
+      };
 
-          // Send the message to the backend using fetch API
-          fetch("/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ message: userMessage }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              var botMessage = data.response;
-              // 使用 marked.js 解析機器人的回應為 Markdown
-              let formattedBotMessage = marked(botMessage);
+      const AI_respon = function (userMessage) {
+        // Send the message to the backend using fetch API
+        fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: userMessage }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            var botMessage = data.response;
+            // 使用 marked.js 解析機器人的回應為 Markdown
+            let formattedBotMessage = marked(botMessage);
 
-              // 顯示機器人回應，格式化 Markdown 為 HTML
-              var aiMessageElement = document.createElement("div");
-              aiMessageElement.classList.add("ai");
-              var aiBubble = document.createElement("div");
-              aiBubble.classList.add("chat-bubble");
+            // 顯示機器人回應，格式化 Markdown 為 HTML
+            var aiMessageElement = document.createElement("div");
+            aiMessageElement.classList.add("ai");
+            var aiBubble = document.createElement("div");
+            aiBubble.classList.add("chat-bubble");
 
-              // 如果訊息中包含程式碼塊，使用 div 包裹 pre 標籤
-              if (formattedBotMessage.includes("<pre>")) {
-                var codeBlockWrapper = document.createElement("div");
-                codeBlockWrapper.classList.add("code-block");
-                codeBlockWrapper.innerHTML = formattedBotMessage;
+            // 將 HTML 內容轉換成 DOM 結構進一步處理
+            let tempDiv = document.createElement("div");
+            tempDiv.innerHTML = formattedBotMessage;
+
+            // 遍歷解析後的子節點
+            tempDiv.childNodes.forEach((node) => {
+              if (node.nodeName === "PRE") {
+                // 處理 <pre> 節點，將其內容包裹進 Markdown 格式的 ''' 块
+
+                const codeBlockWrapper = document.createElement("div");
+                codeBlockWrapper.classList.add("code-block-wrapper"); // Optional: Add specific styling for code block wrapper
+
+                // 創建一個包含 ''' 的文本節點
+                let codeBlock = document.createElement("pre");
+                codeBlock.textContent = node.textContent; // Add the text content of the <pre> block
+
+                // Add the code block inside the wrapper
+                codeBlockWrapper.appendChild(codeBlock);
+
+                // Append the wrapper to the aiBubble
                 aiBubble.appendChild(codeBlockWrapper);
               } else {
-                aiBubble.innerHTML = formattedBotMessage;
+                // 處理其他節點，將它們簡單地附加到 aiBubble 中
+                const textWrapper = document.createElement("div");
+                textWrapper.classList.add("text-block");
+                textWrapper.appendChild(node); // 保留原樣
+                aiBubble.appendChild(textWrapper);
               }
-
-              aiMessageElement.appendChild(aiBubble);
-              chatBox.appendChild(aiMessageElement);
-
-              chatBox.scrollTop = chatBox.scrollHeight; // 滾動到最底部
-            })
-            .catch((error) => {
-              console.error("Error:", error);
             });
-        }
+
+            // Add the final message element to the chat box
+            aiMessageElement.appendChild(aiBubble);
+            chatBox.appendChild(aiMessageElement);
+
+            // Optional: Scroll chat box to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       };
 
       // 監聽 Enter 鍵，並發送訊息
       // Send message when the Enter key is pressed
-      document
-        .getElementById("user-input")
-        .addEventListener("keydown", function (event) {
-          // 如果按下 Enter 鍵，且沒有按 Shift 鍵，則阻止換行並發送訊息
-          if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault(); // 阻止默認的換行行為
-            document.getElementById("send-btn").onclick();
-          }
-          // 如果按下 Shift + Enter，允許換行
-          else if (event.key === "Enter" && event.shiftKey) {
-            return; // 讓瀏覽器處理換行
-          }
-        });
+      textarea.addEventListener("keydown", function (event) {
+        // 如果按下 Enter 鍵，且沒有按 Shift 鍵，則阻止換行並發送訊息
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault(); // 阻止默認的換行行為
+          send_btn.onclick();
+        }
+        // 如果按下 Shift + Enter，允許換行
+        else if (event.key === "Enter" && event.shiftKey) {
+          return; // 讓瀏覽器處理換行
+        }
+      });
     </script>
   </body>
 </html>
