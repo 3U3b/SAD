@@ -158,19 +158,12 @@
       }
       /* General pre styling */
       pre {
-        margin: 0;
-        padding: 0;
-        font-family: Consolas, monospace;
         line-height: 1.5; /* 增加可讀性 */
-      }
-
-      pre {
         font-size: clamp(14px, 4vw, 17px);
         font-family: "Fira Code", monospace; /* 使用更具可讀性的等寬字體 */
-        font-size: 14px;
         background-color: #000725;
         color: #333;
-        padding: 10px;
+        padding: 6px;
         border: 1px solid #001055;
         overflow-x: auto; /* 顯示水平滾動條 */
         border-radius: 5px; /* 圓角邊框 */
@@ -178,8 +171,20 @@
         word-wrap: break-word; /* 單詞長度超過邊界時自動換行 */
       }
 
-      pre code {
-        color: #f8f8f2;
+      pre,code {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        white-space: pre-wrap; /* 保證長程式碼不會溢出 */
+      }
+
+      /* 確保區塊引述顯示正確 */
+      blockquote {
+        padding-left: 10px;
+        border-left: 4px solid #ccc;
+        margin-left: 0;
+        font-style: italic;
       }
     </style>
   </head>
@@ -201,12 +206,12 @@
       <!-- Button bar that contains multiple buttons -->
       <div class="button-bar">
         <button id="text-button-1" class="text-button">Hi</button>
-        <button id="text-button-2" class="text-button">Yo</button>
-        <button id="text-button-3" class="text-button">Who are you?</button>
-        <button id="text-button-4?" class="text-button">The famous course in this mounth</button>
-        <button id="text-button-5?" class="text-button">The famous coach in this mounth</button>
-        <button id="text-button-6?" class="text-button">The event</button>
-        <button id="text-button-7?" class="text-button">Suggested courses</button>
+        <button id="text-button-2" class="text-button">有什麼促銷活動?</button>
+        <button id="text-button-3" class="text-button">你是誰?</button>
+        <button id="text-button-4?" class="text-button">今天有什麼課程?</button>
+        <button id="text-button-5?" class="text-button">哪個教練開最多課?</button>
+        <button id="text-button-6?" class="text-button">一周開設最多的課程類型?</button>
+        <button id="text-button-7?" class="text-button">推薦的課程?</button>
         <!-- Add more buttons as needed -->
       </div>
       <div class="input-bar">
@@ -218,7 +223,9 @@
         <button id="send-btn" class="transition duration-300 ease-in-out">
           發送
         </button>
+        
       </div>
+      <ul id="users-list" class="list-disc pl-6"></ul>
     </div>
 
     <script>
@@ -245,9 +252,9 @@
       // 為每個按鈕設置事件處理函數
       buttons.forEach((button) => {
         button.addEventListener("click", () => {
-          const thebutton = textbutton = document.getElementById(button.id);
+          const thebutton = (textbutton = document.getElementById(button.id));
           textarea.value = thebutton.textContent;
-        send_btn.onclick();
+          send_btn.onclick();
           // console.log(`Button clicked: ${button.textContent}`);
         });
       });
@@ -268,10 +275,11 @@
           chatBox.appendChild(userMessageElement);
 
           textarea.value = ""; // 清空輸入框
-          textarea.style.height = "40px";
+          textarea.style.height = "auto";
           // 滾動到最新訊息
           chatBox.scrollTop = chatBox.scrollHeight;
         }
+        // loadUsers(); // 重新載入用戶列表
         AI_respon(userMessage);
       };
 
@@ -293,38 +301,12 @@
             // 顯示機器人回應，格式化 Markdown 為 HTML
             var aiMessageElement = document.createElement("div");
             aiMessageElement.classList.add("ai");
+
             var aiBubble = document.createElement("div");
             aiBubble.classList.add("chat-bubble");
 
-            // 將 HTML 內容轉換成 DOM 結構進一步處理
-            let tempDiv = document.createElement("div");
-            tempDiv.innerHTML = formattedBotMessage;
-
-            // 遍歷解析後的子節點
-            tempDiv.childNodes.forEach((node) => {
-              if (node.nodeName === "PRE") {
-                // 處理 <pre> 節點，將其內容包裹進 Markdown 格式的 ''' 块
-
-                const codeBlockWrapper = document.createElement("div");
-                codeBlockWrapper.classList.add("code-block-wrapper"); // Optional: Add specific styling for code block wrapper
-
-                // 創建一個包含 ''' 的文本節點
-                let codeBlock = document.createElement("pre");
-                codeBlock.textContent = node.textContent; // Add the text content of the <pre> block
-
-                // Add the code block inside the wrapper
-                codeBlockWrapper.appendChild(codeBlock);
-
-                // Append the wrapper to the aiBubble
-                aiBubble.appendChild(codeBlockWrapper);
-              } else {
-                // 處理其他節點，將它們簡單地附加到 aiBubble 中
-                const textWrapper = document.createElement("div");
-                textWrapper.classList.add("text-block");
-                textWrapper.appendChild(node); // 保留原樣
-                aiBubble.appendChild(textWrapper);
-              }
-            });
+            // 將已格式化的 HTML 插入 aiBubble
+            aiBubble.innerHTML = formattedBotMessage;
 
             // Add the final message element to the chat box
             aiMessageElement.appendChild(aiBubble);
@@ -351,6 +333,23 @@
           return; // 讓瀏覽器處理換行
         }
       });
+
+      function loadUsers() {
+        fetch("/chat/users")
+          .then((response) => response.json())
+          .then((data) => {
+            const usersList = document.getElementById("users-list");
+            usersList.innerHTML = ""; // 清空列表
+
+            // 將每個用戶資料添加到頁面上
+            data.forEach((user) => {
+              const userItem = document.createElement("li");
+              userItem.textContent = `${user.name} (Age: ${user.age})`;
+              usersList.appendChild(userItem);
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
     </script>
   </body>
 </html>

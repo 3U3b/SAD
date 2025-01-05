@@ -1,82 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flask User Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
     <script>
-        // 用來發送 AJAX 請求，無需重新加載頁面
-        function addUser(event) {
-            event.preventDefault(); // 防止表單提交刷新頁面(為何?)
-            // (似乎這樣才能顯示alert(data.message);)
+      // 用來發送 AJAX 請求，無需重新加載頁面
+      function addUser(event) {
+        event.preventDefault(); // 防止表單提交刷新頁面(為何?)
+        // (似乎這樣才能顯示alert(data.message);)
 
-            const name = document.getElementById("name").value;
-            const age = document.getElementById("age").value;
+        const name = document.getElementById("username").value;
+        const age = document.getElementById("age").value;
 
-            // 構建要發送的資料
-            const formData = new FormData();
-            formData.append("name", name);
-            formData.append("age", age);
+        // 構建要發送的資料
+        const formData = new FormData();
+        formData.append("username", name);// 參照sql.py request.form['username']
+        formData.append("age", age);
 
-            // 發送 AJAX 請求到 /sql/add 路由
-            fetch('/sql', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);  // 顯示用戶新增成功的訊息
-                loadUsers();  // 重新載入用戶列表
-            })
-            .catch(error => console.error('Error:', error));
-        }
+        // 發送 AJAX 請求到 /sql/add 路由
+        fetch("/sql", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message); //來自py: return jsonify({'message': 'User added successfully'}), 201
+            //  顯示用戶新增成功的訊息
+            loadUsers(); // 重新載入用戶列表
+          })
+          .catch((error) => console.error("Error:", error));
+      }
 
-        // 用來從後端獲取所有用戶資料
-        function loadUsers() {
-            fetch('/sql/users')
-            .then(response => response.json())
-            .then(data => {
-                const usersList = document.getElementById("users-list");
-                usersList.innerHTML = ''; // 清空列表
+      // 用來從後端獲取所有用戶資料
+      function loadUsers() {
+        fetch("/sql/users")
+          .then((response) => response.json())
+          .then((data) => {
+            const usersList = document.getElementById("users-list");
+            usersList.innerHTML = ""; // 清空列表
 
-                // 將每個用戶資料添加到頁面上
-                data.forEach(user => {
-                    const userItem = document.createElement('li');
-                    userItem.textContent = `${user.name} (Age: ${user.age})`;
-                    usersList.appendChild(userItem);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-        }
-        // 頁面加載時載入用戶資料
-        window.onload = loadUsers;
+            // 將每個用戶資料添加到頁面上
+            data.forEach((user) => {
+              const userItem = document.createElement("li");
+              userItem.textContent = `${user.name} (Age: ${user.age})`;
+              usersList.appendChild(userItem);
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+      // 頁面加載時載入用戶資料
+      window.onload = loadUsers;
     </script>
-</head>
-<body class="bg-gray-100">
-
+  </head>
+  <body class="bg-gray-100">
     <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold text-center mb-6">Flask User Management</h1>
+      <h1 class="text-3xl font-bold text-center mb-6">Flask User Management</h1>
 
-        <!-- 表單來新增用戶 -->
-        <form id="user-form" onsubmit="addUser(event)" class="mb-6">
-            <div class="mb-4">
-                <label for="name" class="block text-lg font-semibold">Name:</label>
-                <input type="text" id="name" required class="w-full p-2 border border-gray-300 rounded">
-            </div>
-            <div class="mb-4">
-                <label for="age" class="block text-lg font-semibold">Age:</label>
-                <input type="number" id="age" required class="w-full p-2 border border-gray-300 rounded">
-            </div>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Add User</button>
-        </form>
+      <!-- 表單來新增用戶 -->
+      <form id="user-form" onsubmit="addUser(event)" class="mb-6">
+        <div class="mb-4">
+          <!--for="username" -> 點擊Name: 標籤時，焦點將自動移動到對應的 input 欄位-->
+          <label for="username" class="block text-lg font-semibold">Name:</label>
+          <input
+            type="text"
+            id="username"
+            required
+            class="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div class="mb-4">
+          <label for="age" class="block text-lg font-semibold">Age:</label>
+          <input
+            type="number"
+            id="age"
+            required
+            class="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+        >
+          Add User
+        </button>
+      </form>
 
-        <h2 class="text-2xl font-semibold mb-4">Users List:</h2>
-        <!-- 顯示用戶列表 -->
-        <ul id="users-list" class="list-disc pl-6">
-            <!-- 用戶資料將顯示在這裡 -->
-        </ul>
+      <h2 class="text-2xl font-semibold mb-4">Users List:</h2>
+      <!-- 顯示用戶列表 -->
+      <ul id="users-list" class="list-disc pl-6">
+        <!-- 用戶資料將顯示在這裡 -->
+      </ul>
     </div>
-
-</body>
+  </body>
 </html>

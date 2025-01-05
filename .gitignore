@@ -3,10 +3,13 @@
 
 # 忽略 Python 編譯字節碼文件
 *.pyc
-__pycache__/
-
-
+**/__pycache__/*
+data/
 
 # 忽略其他不需要版本控制的文件
 *.pyo
 *.pyd
+test.json
+note.py
+note.html
+Chat_log.db
